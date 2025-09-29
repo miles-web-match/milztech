@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, RefObject } from 'react';
 
 const supportsIntersectionObserver = () =>
-  typeof IntersectionObserver !== 'undefined';
+  typeof window !== 'undefined' && 'IntersectionObserver' in window;
 
 export const useInView = <T extends HTMLElement,>(
   options?: IntersectionObserverInit,
@@ -23,7 +23,7 @@ export const useInView = <T extends HTMLElement,>(
       return;
     }
 
-    const observer = new IntersectionObserver(([entry]) => {
+    const observer = new window.IntersectionObserver(([entry]) => {
       setHasInitialized(true);
 
       if (entry.isIntersecting) {
