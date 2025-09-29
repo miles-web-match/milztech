@@ -26,11 +26,9 @@ export const useInView = <T extends HTMLElement,>(
     const observer = new window.IntersectionObserver(([entry]) => {
       setHasInitialized(true);
 
-      if (entry.isIntersecting) {
+      if (entry?.isIntersecting) {
         setIsInView(true);
         observer.unobserve(entry.target as T);
-      } else {
-        setIsInView(false);
       }
     }, options);
 
