@@ -24,7 +24,7 @@ const About: React.FC = () => {
         <AnimatedSection>
           <div className="grid md:grid-cols-5 gap-16 items-start">
             <div className="md:col-span-1 relative h-full flex justify-center md:justify-start">
-              <h2 className="text-3xl md:text-4xl font-serif tracking-widest uppercase text-gray-400 md:absolute md:transform md:-rotate-90 md:origin-top-left" style={ window.innerWidth >= 768 ? { top: '0', left: '2rem' } : {}}>
+              <h2 className="text-3xl md:text-4xl font-serif tracking-widest uppercase text-gray-400 md:absolute md:transform md:-rotate-90 md:origin-top-left md:top-0 md:left-8">
                 {t.about.title}
               </h2>
             </div>
