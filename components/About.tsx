@@ -1,19 +1,20 @@
-import React, { FC, ReactNode } from 'react';
+import React, { FC, ReactNode, useMemo } from 'react';
 import { useLocalization } from '../context/LocalizationContext';
 import { useInView } from '../hooks/useInView';
 
-export const AnimatedSection: FC<{ children: ReactNode, className?: string }> = ({ children, className }) => {
-    const [ref, isInView, hasInitialized] = useInView<HTMLDivElement>({ threshold: 0.1 });
-    const isVisible = !hasInitialized || isInView;
+export const AnimatedSection: FC<{ children: ReactNode; className?: string }> = ({ children, className }) => {
+  const observerOptions = useMemo<IntersectionObserverInit>(() => ({ threshold: 0.1 }), []);
+  const [ref, isInView, hasInitialized] = useInView<HTMLDivElement>(observerOptions);
+  const isVisible = !hasInitialized || isInView;
 
-    return (
-        <div
-            ref={ref}
-            className={`${className || ''} transition-all duration-1000 transform ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
-        >
-            {children}
-        </div>
-    );
+  return (
+    <div
+      ref={ref}
+      className={`${className || ''} transition-all duration-1000 transform ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}
+    >
+      {children}
+    </div>
+  );
 };
 
 const About: React.FC = () => {
