@@ -5,26 +5,31 @@ export const useInView = <T extends HTMLElement,>(options?: IntersectionObserver
   const [isInView, setIsInView] = useState(false);
 
   useEffect(() => {
+    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
+      setIsInView(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) {
         setIsInView(true);
-        // Optional: stop observing after it's visible once
         if (ref.current) {
-            observer.unobserve(ref.current);
+          observer.unobserve(ref.current);
         }
       }
     }, options);
 
-    if (ref.current) {
-      observer.observe(ref.current);
+    const element = ref.current;
+    if (element) {
+      observer.observe(element);
     }
 
     return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current);
+      if (element) {
+        observer.unobserve(element);
       }
     };
-  }, [ref, options]);
+  }, [options]);
 
   return [ref, isInView];
 };
