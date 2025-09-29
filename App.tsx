@@ -12,13 +12,18 @@ import Footer from './components/Footer';
 import LoadingScreen from './components/LoadingScreen';
 
 const App: React.FC = () => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(() => typeof window !== 'undefined');
 
   useEffect(() => {
-    const timer = setTimeout(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const timer = window.setTimeout(() => {
       setLoading(false);
-    }, 2000); // Simulate a loading time
-    return () => clearTimeout(timer);
+    }, 2000);
+
+    return () => window.clearTimeout(timer);
   }, []);
 
   return (

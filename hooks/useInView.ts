@@ -1,30 +1,42 @@
 import { useState, useEffect, useRef, RefObject } from 'react';
 
-export const useInView = <T extends HTMLElement,>(options?: IntersectionObserverInit): [RefObject<T>, boolean] => {
+export const useInView = <T extends HTMLElement,>(
+  options?: IntersectionObserverInit,
+): [RefObject<T>, boolean, boolean] => {
   const ref = useRef<T>(null);
-  const [isInView, setIsInView] = useState(false);
+  const [isInView, setIsInView] = useState(() => typeof window === 'undefined');
+  const [hasInitialized, setHasInitialized] = useState(() => typeof window === 'undefined');
 
   useEffect(() => {
+    if (typeof window === 'undefined' || !('IntersectionObserver' in window)) {
+      setIsInView(true);
+      setHasInitialized(true);
+      return;
+    }
+
     const observer = new IntersectionObserver(([entry]) => {
+      setHasInitialized(true);
       if (entry.isIntersecting) {
         setIsInView(true);
-        // Optional: stop observing after it's visible once
         if (ref.current) {
-            observer.unobserve(ref.current);
+          observer.unobserve(ref.current);
         }
+      } else {
+        setIsInView(false);
       }
     }, options);
 
-    if (ref.current) {
-      observer.observe(ref.current);
+    const element = ref.current;
+    if (element) {
+      observer.observe(element);
     }
 
     return () => {
-      if (ref.current) {
-        observer.unobserve(ref.current);
+      if (element) {
+        observer.unobserve(element);
       }
     };
-  }, [ref, options]);
+  }, [options]);
 
-  return [ref, isInView];
+  return [ref, isInView, hasInitialized];
 };
